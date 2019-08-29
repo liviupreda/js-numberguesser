@@ -7,11 +7,13 @@
 
 // Game values
 let min = 1,
-  max = 10,
-  winningNumber = 2,
+  max = 20,
+  // Hoisting: possible in JS- call functions before declaring them
+  winningNumber = getRandomNumber(min, max),
   guessesLeft = 3;
 
 // UI Elements
+// uiGame is the entire game wrapper, will use for play again game reset
 const uiGame = document.getElementById('game'),
   uiMinNumber = document.querySelector('.min-num'),
   uiMaxNumber = document.querySelector('.max-num'),
@@ -22,6 +24,16 @@ const uiGame = document.getElementById('game'),
 // Assign UI min and max, to show in the HTML
 uiMinNumber.textContent = min;
 uiMaxNumber.textContent = max;
+
+// Play again event listener
+// use mousedown instead of click because otherwise it will reset the game
+// whenever the player clicks on uiGuessBtn
+uiGame.addEventListener('mousedown', function(e) {
+  if (e.target.className === 'play-again') {
+    // reset the window
+    window.location.reload();
+  }
+});
 
 // Listen for guess
 uiGuessBtn.addEventListener('click', function() {
@@ -63,7 +75,7 @@ uiGuessBtn.addEventListener('click', function() {
   }
 });
 
-// Optimization; create function for Game Over - won and Game Over - lost
+// Game Over - won and Game Over - lost
 // won will be true or false, msg will vary depending on the case
 function gameOver(won, msg) {
   let color;
@@ -77,6 +89,16 @@ function gameOver(won, msg) {
   uiMessage.style.color = color;
   // Set message
   setMessage(msg);
+
+  // Play again?
+  uiGuessBtn.value = 'Play again?';
+  // += appends a class
+  uiGuessBtn.className += 'play-again';
+}
+
+// Get random winning number
+function getRandomNumber(min, max) {
+  return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
 // Set message
